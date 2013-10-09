@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+declare envyrc
+
+#envy_envyrc_files("$HOME/.envyrc")
+
+export envy_path
+if [[ -z "${envy_path:-}" ]]
+then
+  if [[ -d "${HOME}/.envy" ]]
+    then envy_path="${HOME}/.envy"
+  fi
+fi
+
+envy_command_path="${HOME}/.envy/libexec"
+export PATH="${envy_command_path}:${PATH}"
+
+command="$1"
+case "$command" in
+  "" | "-h" | "--help" )
+    exec "$envy_path/libexec/envy-help"
+    ;;
+  * )
+    command_path="$(command -v "envy-$command" || true)"
+    if [ -z "$command_path" ]; then
+      echo "envy: no such command \`$command'" >&2
+      exit 1
+    fi
+
+    shift 1
+    exec "$command_path" "$@"
+    ;;
+esac
