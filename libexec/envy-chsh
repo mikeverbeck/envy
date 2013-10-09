@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [ -f "/etc/shells" ]; then
+  shell_path=($(grep "/.*/$1" /etc/shells))
+  chsh -s "$shell_path" 
+  #TODO make this open new shell  (maybe c fork??)
+  printf "\n  Please open a new terminal\n"
+else
+  echo "/etc/shell not found"
+fi
