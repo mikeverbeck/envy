@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+printf "\nSystem shells (/etc/shells)\n\n"
+
+if [ -f "/etc/shells" ]; then
+  shell_paths=($(grep "/.*" /etc/shells))
+
+  for path in "${shell_paths[@]}"
+  do 
+    if [ "$path" == "$SHELL" ]; then
+      echo "=> ${path}"
+    else
+      echo "   ${path}"
+    fi
+  done
+  printf "\n# => current\n"
+else
+  echo "/etc/shell not found"
+fi
