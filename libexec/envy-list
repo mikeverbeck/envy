@@ -12,7 +12,7 @@ environment_defs=($(ls -1 ~/.envy/environments/*.json 2>/dev/null))
 # list files in .envy/environments
 for def in "${environment_defs[@]}"
 do
-  name=`~/.envy/bin/JSON.sh < $def | grep -m 1 "[\"name\"]" | cut -d '"' -f4`
+  name=`~/.envy/bin/JSON.sh < $def | grep -m 1 "^\[\"name\"]" | cut -d '"' -f4`
 
   if [[ -n "$name" ]]
   then
