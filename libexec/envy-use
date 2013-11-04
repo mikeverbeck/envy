@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+#change environements
+
+#find environment.json
+environment_defs=($(ls -1 ~/.envy/environments/*.json 2>/dev/null))
+
+input="$@"
+found=0
+for def in "${environment_defs[@]}"
+do
+  #get proper name
+  name=`~/.envy/bin/JSON.sh < $def | grep -m 1 "^\[\"name\"]" | cut -d '"' -f4`
+  if [[ "$name" == "$input" ]]; then
+    env_def="$def"
+    found=1
+  fi
+done
+if [[ $found == 1 ]]; then
+  # create symlinks for all assets in ~
+  assets_location=`~/.envy/bin/JSON.sh < $env_def | grep -m 1 "^\[\"assets\"]" | cut -d '"' -f4`
+  name=`~/.envy/bin/JSON.sh < $env_def | grep -m 1 "^\[\"name\"]" | cut -d '"' -f4`
+  cmd="ls -Ad1 $assets_location/.*"
+  assets=($(eval $cmd))
+
+  for file in "${assets[@]}"
+  do
+    if [[ "$file" =~ \.$ ]]; then 
+      printf "skipping .... $file\n"
+    else
+      printf "linking .... $file\n"
+      ln -s "$file" ~
+    fi
+  done
+  printf "{\n  \"environment\" : \"$name\"\n}\n" > ~/.envy/etc/config.json
+
+else
+  printf "$input environment not found\n"
+fi
+
+# when switching envs we need to clean up

@@ -3,7 +3,7 @@
 printf "\nAvailable environments \n\n"
 
 # determine which environment is selected 
-if [[ -z ~/.envy/etc/config.json ]]; then
+if [[ -f ~/.envy/etc/config.json ]]; then
   selected=`~/.envy/bin/JSON.sh < ~/.envy/etc/config.json | grep -m 1 "[\"environment\"]" | cut -d '"' -f4`
 fi
 
